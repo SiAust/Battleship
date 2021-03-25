@@ -70,7 +70,7 @@ public class Field {
             }
         }
     }
-    /** throws WrongSizeShip, IllegalCoordinates, ErrorShipOverlapException */
+    /** throws WrongSizeShip, IllegalCoordinates */
     public void addShip(Ship ship, int[] coordinates) {
         /* Check we're placing a ship horizontally (row indices are equal [0] == [2]) */
         if (coordinates[0] == coordinates[2]) {
@@ -84,8 +84,6 @@ public class Field {
             // place ship
             validateShipPlacement(coordinates, true);
 
-            System.out.println("Same row"); // todo remove
-
         /* Check we're placing a ship vertically (column indices are equal [1] == [3]) */
         } else if (coordinates[1] == coordinates[3]) {
 
@@ -98,7 +96,6 @@ public class Field {
             // place ship
             validateShipPlacement(coordinates, false);
 
-            System.out.println("Same column"); // todo remove
         } else { // illegal coordinates
             throw new IllegalShipLocation();
         }
@@ -116,7 +113,6 @@ public class Field {
             checkAdjacentCellsUnoccupied(coordinates, false);
             adjustCellsForNewShip(coordinates, false);
         }
-
     }
 
     /**
@@ -140,15 +136,29 @@ public class Field {
         }
     }
 
+    /** By the rules of the game all ships should not sit adjacent to any other ship.
+     * There should be at least one empty cell between ship and another.
+     * @param coordinates length == 4 , [rowStart][colStart][rowEnd][colEnd]
+     * @throws IllegalShipLocation if the ship is too close to another */
     private void checkAdjacentCellsUnoccupied(int[] coordinates, boolean isHorizontal) {
-        if (isHorizontal) {
-            for (int i = coordinates[0] - 1; i < coordinates[2] + 1; i++) { // start at top left, finish bottom right
-                for (int j = coordinates[1] - 1; j < coordinates[3] + 1; j++) { // check each column, skip ship cells
-                    if (field[i][j].equals(SHIP.getSymbol())) {
-                        throw new ErrorShipOverlapException();
+
+            // prevent IndexOutOfBounds exception
+            int rowBoundary = Math.min(coordinates[2] + 2, field.length);
+            int colBoundary = Math.min(coordinates[3] + 2, field[0].length);
+
+            // Checks all cells adjacent to the proposed position of the ship
+            for (int i = coordinates[0] - 1; i < rowBoundary; i++) {
+                    for (int j = coordinates[1] - 1; j < colBoundary; j++) { // check each column
+                        // skip positions where we will legally place the ship
+                        if (i >= coordinates[0] && i <= coordinates[2]
+                            &&
+                            j >= coordinates[1] && j <= coordinates[3]) {
+                            continue;
+                        }
+                        if (field[i][j].equals(SHIP.getSymbol())) {
+                            throw new IllegalShipLocation();
+                        }
                     }
-                }
-            }
         }
     }
 
@@ -167,10 +177,10 @@ public class Field {
 
     @Override
     public String toString() {
-        return Arrays.deepToString(field)
+        return Arrays.deepToString(field) // todo replace with regex?
                 .replace("], ", "\n")
                 .replace("[", "")
-                .replace("]", "") // fixme why is this extra bracket needed?
+                .replace("]", "")
                 .replace(",", "")
                 .concat("\n");
     }

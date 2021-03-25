@@ -49,4 +49,9 @@ public class Coordinates {
     public int[] getCoordinates() {
         return coordinates;
     }
+
+    // getStartRow
+    // getEndRow
+    // getStartCol
+    // getEndCol
 }

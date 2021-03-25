@@ -24,7 +24,7 @@ public class CoordinatesTests {
 
         // F3 F7 Aircraft Carrier, expected add ship
         field.addShip(Ship.AIRCRAFT_CARRIER, new Coordinates(new String[]{"F3", "F7"}).getCoordinates());
-        String currentFieldState = "  1 2 3 4 5 6 7 8 9 10\n" +
+        String currentFieldState =  "  1 2 3 4 5 6 7 8 9 10\n" +
                                     "A ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
                                     "B ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
                                     "C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
@@ -109,10 +109,4 @@ public class CoordinatesTests {
                             "J ~ O ~ ~ ~ ~ ~ O O O\n";
         Assertions.assertEquals(currentFieldState, field.toString());
     }
-
-
-
-
-
-
 }
