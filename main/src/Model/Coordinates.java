@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 public class Coordinates {
 
+    // todo refactor to use Point()
+
     private final int[] coordinates;
 
     public Coordinates(String[] coords) {

@@ -3,7 +3,9 @@ package Game;
 import Enums.Ship;
 import Model.Coordinates;
 import Model.Field;
+import Model.Point;
 
+import java.sql.SQLOutput;
 import java.util.EnumSet;
 import java.util.Scanner;
 
@@ -13,7 +15,7 @@ public class Battleship {
     private Field field;
     private EnumSet<Ship> ships = EnumSet.allOf(Ship.class);
 
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner sc = new Scanner(System.in);
 
 
     public Battleship() {
@@ -21,9 +23,11 @@ public class Battleship {
     }
 
     public void play() {
-//        Coordinates coordinates = new Coordinates("F2", "A1"); // 62, 11
-//        System.out.println(Arrays.toString(coordinates.getCoordinatesIndices()));
-        Scanner sc = new Scanner(System.in);
+        setupGame();
+        shootYourShot();
+    }
+
+    private void setupGame() {
         System.out.println(field);
         for (Ship ship : ships) {
             System.out.printf(INPUT_COORD, ship.getName(), ship.getSize());
@@ -40,7 +44,23 @@ public class Battleship {
             }
             System.out.println(field);
         }
+    }
 
+    private void shootYourShot() {
+        System.out.println("The game starts!\n");
+        System.out.println(field);
+        Point point;
+        while (true) {
+            try {
+                System.out.println("Take a shot!\n");
+                point = new Point(sc.nextLine());
+                System.out.println(field.fireShot(point));
+                break;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        System.out.println(field);
     }
 
 }
