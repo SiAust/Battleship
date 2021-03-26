@@ -4,7 +4,8 @@ public enum GameSymbols {
 
     FOG_OF_WAR("~"),
     SHIP("O"),
-    HIT("X");
+    HIT("X"),
+    MISS("M");
 
     private final String symbol;
 

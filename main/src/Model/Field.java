@@ -1,13 +1,13 @@
 package Model;
 
 import Enums.Ship;
+import Enums.GameSymbols;
 import Exceptions.ErrorShipOverlapException;
 import Exceptions.IllegalShipLocation;
 import Exceptions.WrongLengthShip;
 
 import java.util.Arrays;
 
-import static Enums.GameSymbols.*;
 
 public class Field {
 
@@ -65,7 +65,7 @@ public class Field {
                     field[i][j] = c;
                 }
                 if (i > 0 && j > 0) {
-                    field[i][j] = FOG_OF_WAR.getSymbol();
+                    field[i][j] = GameSymbols.FOG_OF_WAR.getSymbol();
                 }
             }
         }
@@ -123,13 +123,13 @@ public class Field {
     private void checkCellsUnoccupied(int[] coordinates, boolean isHorizontal) {
         if (isHorizontal) {
             for (int i = coordinates[1]; i < coordinates[3]; i++) { // iterate over the columns
-                if (field[coordinates[0]][i].equals(SHIP.getSymbol())) {
+                if (field[coordinates[0]][i].equals(GameSymbols.SHIP.getSymbol())) {
                     throw new ErrorShipOverlapException(); // a ship already occupies this cell
                 }
             }
         } else {
             for (int i = coordinates[0]; i < coordinates[2]; i++) { // iterate over the columns
-                if (field[i][coordinates[1]].equals(SHIP.getSymbol())) {
+                if (field[i][coordinates[1]].equals(GameSymbols.SHIP.getSymbol())) {
                     throw new ErrorShipOverlapException(); // a ship already occupies this cell
                 }
             }
@@ -155,7 +155,7 @@ public class Field {
                             j >= coordinates[1] && j <= coordinates[3]) {
                             continue;
                         }
-                        if (field[i][j].equals(SHIP.getSymbol())) {
+                        if (field[i][j].equals(GameSymbols.SHIP.getSymbol())) {
                             throw new IllegalShipLocation();
                         }
                     }
@@ -163,7 +163,7 @@ public class Field {
     }
 
     private void adjustCellsForNewShip(int[] coordinates, boolean isHorizontal) {
-        String shipSymbol = SHIP.getSymbol();
+        String shipSymbol = GameSymbols.SHIP.getSymbol();
         if (isHorizontal) {
             for (int i = coordinates[1]; i <= coordinates[3]; i++) {
                 field[coordinates[0]][i] = shipSymbol; // field[row][column]
@@ -172,6 +172,17 @@ public class Field {
             for (int i = coordinates[0]; i <= coordinates[2]; i++) {
                 field[i][coordinates[1]] = shipSymbol; // field[row][column]
             }
+        }
+    }
+
+    public String fireShot(Point point) {
+        String cell = field[point.getX()][point.getY()];
+        if (GameSymbols.SHIP.getSymbol().equals(cell)) {
+            field[point.getX()][point.getY()] = GameSymbols.HIT.getSymbol();
+            return "You hit a ship!\n";
+        } else {
+        field[point.getX()][point.getY()] = GameSymbols.MISS.getSymbol();
+            return "You missed!\n";
         }
     }
 
