@@ -1,14 +1,6 @@
-import Enums.Ship;
-import Exceptions.IllegalShipLocation;
-import Exceptions.WrongLengthShip;
 import Model.Coordinates;
-import Model.Field;
-
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class CoordinatesTests {
 

@@ -52,8 +52,4 @@ public class Coordinates {
         return coordinates;
     }
 
-    // getStartRow
-    // getEndRow
-    // getStartCol
-    // getEndCol
 }
