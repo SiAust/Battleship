@@ -1,5 +1,6 @@
 package Game;
 
+import Enums.GameSymbols;
 import Enums.Ship;
 import Model.Coordinates;
 import Model.Field;
@@ -48,13 +49,16 @@ public class Battleship {
 
     private void shootYourShot() {
         System.out.println("The game starts!\n");
-        System.out.println(field);
+        System.out.println(field.fieldWithFogOfWar());
         Point point;
+        String result;
         while (true) {
             try {
                 System.out.println("Take a shot!\n");
                 point = new Point(sc.nextLine());
-                System.out.println(field.fireShot(point));
+                result = field.fireShot(point);
+                System.out.println(field.fieldWithFogOfWar());
+                System.out.println(result);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());

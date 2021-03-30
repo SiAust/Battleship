@@ -186,6 +186,10 @@ public class Field {
         }
     }
 
+    public String fieldWithFogOfWar() {
+        return this.toString().replace(GameSymbols.SHIP.getSymbol(), "~");
+    }
+
     @Override
     public String toString() {
         return Arrays.deepToString(field) // todo replace with regex?

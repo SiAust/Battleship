@@ -104,13 +104,9 @@ public class HyperSkillTests {
 
     @Test
     void stageTwo() {
-        Field fieldTest1 = new Field();
+        Field field1 = new Field();
 
-        fieldTest1.addShip(Ship.AIRCRAFT_CARRIER, new Coordinates(new String[]{"F3", "F7"}).getCoordinates());
-        fieldTest1.addShip(Ship.BATTLESHIP, new Coordinates(new String[]{"A1", "D1"}).getCoordinates());
-        fieldTest1.addShip(Ship.SUBMARINE, new Coordinates(new String[]{"J10", "J8"}).getCoordinates());
-        fieldTest1.addShip(Ship.CRUISER, new Coordinates(new String[]{"B9", "D9"}).getCoordinates());
-        fieldTest1.addShip(Ship.DESTROYER, new Coordinates(new String[]{"I2", "J2"}).getCoordinates());
+        setupGameField(field1);
 
         String currentFieldState = "  1 2 3 4 5 6 7 8 9 10\n" +
                                     "A X ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
@@ -124,19 +120,15 @@ public class HyperSkillTests {
                                     "I ~ O ~ ~ ~ ~ ~ ~ ~ ~\n" +
                                     "J ~ O ~ ~ ~ ~ ~ O O O\n";
 
-        fieldTest1.fireShot(new Point("A1"));
+        field1.fireShot(new Point("A1"));
 
-        Assertions.assertEquals(currentFieldState, fieldTest1.toString());
+        Assertions.assertEquals(currentFieldState, field1.toString());
 
-        Field fieldTest2 = new Field();
+        Field field2 = new Field();
 
-        fieldTest2.addShip(Ship.AIRCRAFT_CARRIER, new Coordinates(new String[]{"F3", "F7"}).getCoordinates());
-        fieldTest2.addShip(Ship.BATTLESHIP, new Coordinates(new String[]{"A1", "D1"}).getCoordinates());
-        fieldTest2.addShip(Ship.SUBMARINE, new Coordinates(new String[]{"J10", "J8"}).getCoordinates());
-        fieldTest2.addShip(Ship.CRUISER, new Coordinates(new String[]{"B9", "D9"}).getCoordinates());
-        fieldTest2.addShip(Ship.DESTROYER, new Coordinates(new String[]{"I2", "J2"}).getCoordinates());
+        setupGameField(field2);
 
-        Assertions.assertThrows(IllegalCoordinates.class, () -> fieldTest2.fireShot(new Point("Z1")));
+        Assertions.assertThrows(IllegalCoordinates.class, () -> field2.fireShot(new Point("Z1")));
 
         currentFieldState = "  1 2 3 4 5 6 7 8 9 10\n" +
                             "A O M ~ ~ ~ ~ ~ ~ ~ ~\n" +
@@ -150,8 +142,55 @@ public class HyperSkillTests {
                             "I ~ O ~ ~ ~ ~ ~ ~ ~ ~\n" +
                             "J ~ O ~ ~ ~ ~ ~ O O O\n";
 
-        fieldTest2.fireShot(new Point("A2"));
-        Assertions.assertEquals(currentFieldState, fieldTest2.toString());
+        field2.fireShot(new Point("A2"));
+        Assertions.assertEquals(currentFieldState, field2.toString());
 
+    }
+
+    @Test
+    void stageThree() {
+        Field field = new Field();
+        setupGameField(field);
+
+        String fieldWithFogOfWarState = "  1 2 3 4 5 6 7 8 9 10\n" +
+                                        "A ~ M ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "B ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "D ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "E ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "F ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "G ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "I ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                        "J ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+        field.fireShot(new Point("A2"));
+        Assertions.assertEquals(fieldWithFogOfWarState, field.fieldWithFogOfWar());
+
+        field = new Field();
+        setupGameField(field);
+
+        fieldWithFogOfWarState = "  1 2 3 4 5 6 7 8 9 10\n" +
+                                 "A ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "B ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "D ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "E ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "F ~ ~ ~ X ~ ~ ~ ~ ~ ~\n" +
+                                 "G ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "I ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                                 "J ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+
+        field.fireShot(new Point("F4"));
+        Assertions.assertEquals(fieldWithFogOfWarState, field.fieldWithFogOfWar());
+
+    }
+
+    private void setupGameField(Field field) {
+        field.addShip(Ship.AIRCRAFT_CARRIER, new Coordinates(new String[]{"F3", "F7"}).getCoordinates());
+        field.addShip(Ship.BATTLESHIP, new Coordinates(new String[]{"A1", "D1"}).getCoordinates());
+        field.addShip(Ship.SUBMARINE, new Coordinates(new String[]{"J10", "J8"}).getCoordinates());
+        field.addShip(Ship.CRUISER, new Coordinates(new String[]{"B9", "D9"}).getCoordinates());
+        field.addShip(Ship.DESTROYER, new Coordinates(new String[]{"I2", "J2"}).getCoordinates());
     }
 }

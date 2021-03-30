@@ -21,4 +21,5 @@ will be reflected on the battlefield.
 ###To run
 
 Clone this repository, in your favourite terminal `cd battleship`,
-and execute `java main\src\Main.java`
+and execute `java -jar out/artifacts/battleship_jar/battleship.jar
+`
