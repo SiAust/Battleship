@@ -1,8 +1,8 @@
-##Battleship
+## Battleship
 A command line interface which simulates a game of Battleship.
 Written in Java.
 
-###Rules
+### Rules
 Use the grid to place your Battleship using the coordinates, 
 two points between which it will be positioned.
 The ships must not overlap, and must not be placed beside
@@ -20,7 +20,7 @@ will be reflected on the battlefield.
 
 The game continues until all the ships have been sunk.
 
-###To run
+### To run
 
 Clone this repository, in your favourite terminal `cd battleship`,
 and execute `java -jar out/artifacts/battleship_jar/battleship.jar
