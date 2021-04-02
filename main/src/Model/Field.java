@@ -1,17 +1,22 @@
 package Model;
 
-import Enums.Ship;
+import Enums.ShipEnum;
 import Enums.GameSymbols;
 import Exceptions.ErrorShipOverlapException;
 import Exceptions.IllegalShipLocation;
 import Exceptions.WrongLengthShip;
+import Model.Ships.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 
 public class Field {
 
     String[][] field = new String[11][11];
+
+//    List<Ship> shipsOnField = new ArrayList<>();
+    /** Stores the ships on the field and whether they are sunk */
+    Map<Ship, Boolean> shipsOnField = new HashMap<>();
 
     public Field() {
         createField();
@@ -70,27 +75,29 @@ public class Field {
             }
         }
     }
+
     /** throws WrongSizeShip, IllegalCoordinates */
-    public void addShip(Ship ship, int[] coordinates) {
+    public void addShip(ShipEnum shipEnum, Coordinates coord) {
+        int[] coordinates = coord.getCoordinates();
         /* Check we're placing a ship horizontally (row indices are equal [0] == [2]) */
         if (coordinates[0] == coordinates[2]) {
 
-            if (ship.getSize() !=
+            if (shipEnum.getSize() !=
                     (Math.max(coordinates[1], coordinates[3]) + 1) // inclusive cell
-                    - Math.min(coordinates[1], coordinates[3])) {
-                throw new WrongLengthShip(ship.getName());
+                            - Math.min(coordinates[1], coordinates[3])) {
+                throw new WrongLengthShip(shipEnum.getName());
             }
 
             // place ship
             validateShipPlacement(coordinates, true);
 
-        /* Check we're placing a ship vertically (column indices are equal [1] == [3]) */
+            /* Check we're placing a ship vertically (column indices are equal [1] == [3]) */
         } else if (coordinates[1] == coordinates[3]) {
 
-            if (ship.getSize() !=
+            if (shipEnum.getSize() !=
                     (Math.max(coordinates[0], coordinates[2]) + 1) // inclusive cell
-                    - Math.min(coordinates[0], coordinates[2])) {
-                throw new WrongLengthShip(ship.getName());
+                            - Math.min(coordinates[0], coordinates[2])) {
+                throw new WrongLengthShip(shipEnum.getName());
             }
 
             // place ship
@@ -100,17 +107,39 @@ public class Field {
             throw new IllegalShipLocation();
         }
 
+        /* We identify the ship and add it to the list of ships on the field.
+         * We keep the list so when a shot is fired, it can be recorded against the right ship,
+         * through checking the point matches the ships coordinates. The ship takes a hit, and
+         * will check if it is sunk */
+        switch (shipEnum) {
+            case AIRCRAFT_CARRIER:
+                shipsOnField.put(new AircraftCarrier(coord), false);
+                break;
+            case BATTLESHIP:
+                shipsOnField.put(new Battleship(coord), false);
+                break;
+            case SUBMARINE:
+                shipsOnField.put(new Submarine(coord), false);
+                break;
+            case CRUISER:
+                shipsOnField.put(new Cruiser(coord), false);
+                break;
+            case DESTROYER:
+                shipsOnField.put(new Destroyer(coord), false);
+                break;
+        }
     }
+
 
     private void validateShipPlacement(int[] coordinates, boolean isHorizontallyOriented)
             throws ErrorShipOverlapException {
         if (isHorizontallyOriented) {
             checkCellsUnoccupied(coordinates, true);
-            checkAdjacentCellsUnoccupied(coordinates, true);
+            checkAdjacentCellsUnoccupied(coordinates);
             adjustCellsForNewShip(coordinates, true);
         } else {
             checkCellsUnoccupied(coordinates, false);
-            checkAdjacentCellsUnoccupied(coordinates, false);
+            checkAdjacentCellsUnoccupied(coordinates);
             adjustCellsForNewShip(coordinates, false);
         }
     }
@@ -137,28 +166,28 @@ public class Field {
     }
 
     /** By the rules of the game all ships should not sit adjacent to any other ship.
-     * There should be at least one empty cell between ship and another.
+     * There should be at least one empty cell between one ship and another.
      * @param coordinates length == 4 , [rowStart][colStart][rowEnd][colEnd]
      * @throws IllegalShipLocation if the ship is too close to another */
-    private void checkAdjacentCellsUnoccupied(int[] coordinates, boolean isHorizontal) {
+    private void checkAdjacentCellsUnoccupied(int[] coordinates) {
 
-            // prevent IndexOutOfBounds exception
-            int rowBoundary = Math.min(coordinates[2] + 2, field.length);
-            int colBoundary = Math.min(coordinates[3] + 2, field[0].length);
+        // prevent IndexOutOfBounds exception
+        int rowBoundary = Math.min(coordinates[2] + 2, field.length);
+        int colBoundary = Math.min(coordinates[3] + 2, field[0].length);
 
-            // Checks all cells adjacent to the proposed position of the ship
-            for (int i = coordinates[0] - 1; i < rowBoundary; i++) {
-                    for (int j = coordinates[1] - 1; j < colBoundary; j++) { // check each column
-                        // skip positions where we will legally place the ship
-                        if (i >= coordinates[0] && i <= coordinates[2]
-                            &&
-                            j >= coordinates[1] && j <= coordinates[3]) {
-                            continue;
-                        }
-                        if (field[i][j].equals(GameSymbols.SHIP.getSymbol())) {
-                            throw new IllegalShipLocation();
-                        }
-                    }
+        // Checks all cells adjacent to the proposed position of the ship
+        for (int i = coordinates[0] - 1; i < rowBoundary; i++) {
+            for (int j = coordinates[1] - 1; j < colBoundary; j++) { // check each column
+                // skip positions where we will legally place the ship
+                if (i >= coordinates[0] && i <= coordinates[2]
+                        &&
+                        j >= coordinates[1] && j <= coordinates[3]) {
+                    continue;
+                }
+                if (field[i][j].equals(GameSymbols.SHIP.getSymbol())) {
+                    throw new IllegalShipLocation();
+                }
+            }
         }
     }
 
@@ -177,13 +206,39 @@ public class Field {
 
     public String fireShot(Point point) {
         String cell = field[point.getX()][point.getY()];
-        if (GameSymbols.SHIP.getSymbol().equals(cell)) {
+        // fixme hitting an already 'hit' cell returns a hit.
+        if (GameSymbols.SHIP.getSymbol().equals(cell) || GameSymbols.HIT.getSymbol().equals(cell)) {
             field[point.getX()][point.getY()] = GameSymbols.HIT.getSymbol();
-            return "You hit a ship!\n";
+            return isShipSunk(point) ?
+                    isAllShipsSunk() ? "You sank the last ship. You won. Congratulations!"
+                            : "You sank a ship! Specify a new target:\n"
+                    : "You hit a ship! Try again:\n";
         } else {
-        field[point.getX()][point.getY()] = GameSymbols.MISS.getSymbol();
-            return "You missed!\n";
+            field[point.getX()][point.getY()] = GameSymbols.MISS.getSymbol();
+            return "You missed. Try again:\n";
         }
+    }
+
+    /** Checks the ships on the field have been sunk.
+     * Iterates through shipsOnField and will change the Map boolean to true
+     * if the ship has taken enough hits.
+     * @param point This is a location of the current hit point against the ship.
+     * @return whether the ship is sunk, i.e. all cells are now hit. */
+    private boolean isShipSunk(Point point) {
+        for (Ship ship : shipsOnField.keySet()) {
+            if (ship.getCoordinates().isPointWithin(point)) {
+                ship.takeHit(point);
+                if (ship.isSunk()) {
+                    shipsOnField.put(ship, true);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isAllShipsSunk() {
+        return shipsOnField.keySet().stream().allMatch(Ship::isSunk);
     }
 
     public String fieldWithFogOfWar() {

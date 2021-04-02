@@ -18,6 +18,8 @@ Once all the ships have been placed on the battlefield
 the game starts! Enter a point to fire a shot, the result
 will be reflected on the battlefield.
 
+The game continues until all the ships have been sunk.
+
 ###To run
 
 Clone this repository, in your favourite terminal `cd battleship`,
