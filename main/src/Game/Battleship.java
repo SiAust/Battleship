@@ -1,20 +1,22 @@
 package Game;
 
-import Enums.GameSymbols;
-import Enums.Ship;
+import Enums.ShipEnum;
 import Model.Coordinates;
 import Model.Field;
 import Model.Point;
+import Model.Ships.AircraftCarrier;
+import Model.Ships.Ship;
 
-import java.sql.SQLOutput;
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Scanner;
 
 public class Battleship {
 
     private final String INPUT_COORD = "Enter the coordinates of the %s (%d cells):\n";
     private Field field;
-    private EnumSet<Ship> ships = EnumSet.allOf(Ship.class);
+    private EnumSet<ShipEnum> shipEnums = EnumSet.allOf(ShipEnum.class);
 
     private Scanner sc = new Scanner(System.in);
 
@@ -30,13 +32,12 @@ public class Battleship {
 
     private void setupGame() {
         System.out.println(field);
-        for (Ship ship : ships) {
-            System.out.printf(INPUT_COORD, ship.getName(), ship.getSize());
+        for (ShipEnum shipEnum : shipEnums) {
+            System.out.printf(INPUT_COORD, shipEnum.getName(), shipEnum.getSize());
             while (true) {
-                int[] desiredCoordinates = new Coordinates(sc.nextLine().split(" ")).getCoordinates();
                 try {
                     // method to place ship throws WrongSizeShip etc
-                    field.addShip(ship,desiredCoordinates);
+                    field.addShip(shipEnum, new Coordinates(sc.nextLine().split(" ")));
                     break;
                 } catch (RuntimeException e) {
                     System.out.println(e.getMessage());
@@ -51,15 +52,14 @@ public class Battleship {
         System.out.println("The game starts!\n");
         System.out.println(field.fieldWithFogOfWar());
         Point point;
-        String result;
-        while (true) {
+        String result = "";
+        while (!result.contains("Congratulations!")) {
+            System.out.println("Take a shot!\n");
             try {
-                System.out.println("Take a shot!\n");
                 point = new Point(sc.nextLine());
                 result = field.fireShot(point);
                 System.out.println(field.fieldWithFogOfWar());
                 System.out.println(result);
-                break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

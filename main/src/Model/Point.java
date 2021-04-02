@@ -2,6 +2,8 @@ package Model;
 
 import Exceptions.IllegalCoordinates;
 
+import java.util.Arrays;
+
 public class Point {
 
     int[] point;
@@ -47,5 +49,24 @@ public class Point {
 
     public int getY() {
         return point[1];
+    }
+
+    @Override
+    public int hashCode() {
+        return point[0] + point[1];
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Point)) {
+            return false;
+        }
+        Point otherPoint = (Point) obj;
+        return point[0] == otherPoint.getX() && point[1] == otherPoint.getY();
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(point);
     }
 }

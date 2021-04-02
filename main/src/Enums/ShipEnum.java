@@ -1,6 +1,6 @@
 package Enums;
 
-public enum Ship {
+public enum ShipEnum {
 
     AIRCRAFT_CARRIER("Aircraft Carrier", 5),
     BATTLESHIP("Battleship", 4),
@@ -11,7 +11,7 @@ public enum Ship {
     private final String name;
     private final int size;
 
-    Ship(String name, int size) {
+    ShipEnum(String name, int size) {
         this.name = name;
         this.size = size;
     }

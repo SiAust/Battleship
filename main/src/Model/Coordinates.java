@@ -52,4 +52,16 @@ public class Coordinates {
         return coordinates;
     }
 
+    /** Checks whether a Point is within the same line as the coordinates.
+     * Point X, Y, need to be equal to or within
+     * the range of the row indices, and column indices respectively.
+     * @param  point the point to be checked against this coordinate.
+     * @return whether the point is on the coordinates */
+    public boolean isPointWithin(Point point) {
+        int x = point.getX();
+        int y = point.getY();
+        boolean sameRow = (coordinates[0] <= x) && (x <= coordinates[2]);
+        boolean sameCol = (coordinates[1] <= y) && (y <= coordinates[3]);
+        return sameRow && sameCol;
+    }
 }
