@@ -211,11 +211,11 @@ public class Field {
             field[point.getX()][point.getY()] = GameSymbols.HIT.getSymbol();
             return isShipSunk(point) ?
                     isAllShipsSunk() ? "You sank the last ship. You won. Congratulations!"
-                            : "You sank a ship! Specify a new target:\n"
-                    : "You hit a ship! Try again:\n";
+                            : "You sank a ship!\n"
+                    : "You hit a ship!\n";
         } else {
             field[point.getX()][point.getY()] = GameSymbols.MISS.getSymbol();
-            return "You missed. Try again:\n";
+            return "You missed!\n";
         }
     }
 

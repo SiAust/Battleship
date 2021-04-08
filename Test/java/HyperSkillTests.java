@@ -6,6 +6,7 @@ import Model.Coordinates;
 import Model.Field;
 import Model.Point;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 public class HyperSkillTests {
 
     @Test
+    @Disabled("The structure of the program has altered for stage five")
     void stageOne() {
         Field field = new Field();
 
@@ -106,6 +108,7 @@ public class HyperSkillTests {
     }
 
     @Test
+    @Disabled("The structure of the program has altered for stage five")
     void stageTwo() {
         Field field1 = new Field();
 
@@ -151,6 +154,7 @@ public class HyperSkillTests {
     }
 
     @Test
+    @Disabled("The structure of the program has altered for stage five")
     void stageThree() {
         Field field = new Field();
         setupGameField(field);
@@ -190,6 +194,7 @@ public class HyperSkillTests {
     }
 
     @Test
+    @Disabled("The structure of the program has altered for stage five")
     void stageFour() {
         Field field = new Field();
         setupGameField(field);
