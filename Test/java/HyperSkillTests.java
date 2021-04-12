@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HyperSkillTests {
 
     @Test
@@ -112,7 +109,7 @@ public class HyperSkillTests {
     void stageTwo() {
         Field field1 = new Field();
 
-        setupGameField(field1);
+        setupGameFieldPlayer1(field1);
 
         String currentFieldState = "  1 2 3 4 5 6 7 8 9 10\n" +
                 "A X ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
@@ -132,7 +129,7 @@ public class HyperSkillTests {
 
         Field field2 = new Field();
 
-        setupGameField(field2);
+        setupGameFieldPlayer1(field2);
 
         Assertions.assertThrows(IllegalCoordinates.class, () -> field2.fireShot(new Point("Z1")));
 
@@ -157,7 +154,7 @@ public class HyperSkillTests {
     @Disabled("The structure of the program has altered for stage five")
     void stageThree() {
         Field field = new Field();
-        setupGameField(field);
+        setupGameFieldPlayer1(field);
 
         String fieldWithFogOfWarState = "  1 2 3 4 5 6 7 8 9 10\n" +
                 "A ~ M ~ ~ ~ ~ ~ ~ ~ ~\n" +
@@ -174,7 +171,7 @@ public class HyperSkillTests {
         Assertions.assertEquals(fieldWithFogOfWarState, field.fieldWithFogOfWar());
 
         field = new Field();
-        setupGameField(field);
+        setupGameFieldPlayer1(field);
 
         fieldWithFogOfWarState = "  1 2 3 4 5 6 7 8 9 10\n" +
                 "A ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
@@ -197,7 +194,7 @@ public class HyperSkillTests {
     @Disabled("The structure of the program has altered for stage five")
     void stageFour() {
         Field field = new Field();
-        setupGameField(field);
+        setupGameFieldPlayer1(field);
 
         simulateMisses(field);
         sinkAircraftCarrier(field);
@@ -307,11 +304,110 @@ public class HyperSkillTests {
         }
     }
 
-    private void setupGameField(Field field) {
+    @Test
+    void StageFive() {
+        Field player1Field = new Field();
+        Field player2Field = new Field();
+
+        setupGameFieldPlayer1(player1Field);
+        setupGameFieldPlayer2(player2Field);
+
+        String fieldsResult = "  1 2 3 4 5 6 7 8 9 10\n" +
+                "A ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "B ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "D ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "E ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "F ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "G ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "I ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "J ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "---------------------\n" +
+                "  1 2 3 4 5 6 7 8 9 10\n" +
+                "A O ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "B O ~ ~ ~ ~ ~ ~ ~ O ~\n" +
+                "C O ~ ~ ~ ~ ~ ~ ~ O ~\n" +
+                "D O ~ ~ ~ ~ ~ ~ ~ O ~\n" +
+                "E ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "F ~ ~ O O O O O ~ ~ ~\n" +
+                "G ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "I ~ O ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "J ~ O ~ ~ ~ ~ ~ O O O\n";
+
+        Assertions.assertEquals(fieldsResult, player1Field.printFields(player2Field));
+
+        fieldsResult = "  1 2 3 4 5 6 7 8 9 10\n" +
+                "A ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "B ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "C ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "D ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "E ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "F ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "G ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "I ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "J ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "---------------------\n" +
+                "  1 2 3 4 5 6 7 8 9 10\n" +
+                "A O ~ ~ ~ ~ ~ O O O ~\n" +
+                "B O ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "C O ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "D O ~ ~ ~ O O ~ ~ ~ ~\n" +
+                "E O ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "F ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "G O O O O ~ ~ ~ ~ ~ ~\n" +
+                "H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
+                "I ~ O O O ~ ~ ~ ~ ~ ~\n" +
+                "J ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+
+        Assertions.assertEquals(fieldsResult, player2Field.printFields(player1Field));
+
+
+    }
+
+    private void setupGameFieldPlayer1(Field field) {
         field.addShip(ShipEnum.AIRCRAFT_CARRIER, new Coordinates(new String[]{"F3", "F7"}));
         field.addShip(ShipEnum.BATTLESHIP, new Coordinates(new String[]{"A1", "D1"}));
         field.addShip(ShipEnum.SUBMARINE, new Coordinates(new String[]{"J10", "J8"}));
         field.addShip(ShipEnum.CRUISER, new Coordinates(new String[]{"B9", "D9"}));
         field.addShip(ShipEnum.DESTROYER, new Coordinates(new String[]{"I2", "J2"}));
+
+                /*
+                  1 2 3 4 5 6 7 8 9 10
+                A O ~ ~ ~ ~ ~ ~ ~ ~ ~
+                B O ~ ~ ~ ~ ~ ~ ~ O ~
+                C O ~ ~ ~ ~ ~ ~ ~ O ~
+                D O ~ ~ ~ ~ ~ ~ ~ O ~
+                E ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+                F ~ ~ O O O O O ~ ~ ~
+                G ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+                H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+                I ~ O ~ ~ ~ ~ ~ ~ ~ ~
+                J ~ O ~ ~ ~ ~ ~ O O O
+                */
+    }
+
+    private void setupGameFieldPlayer2(Field field) {
+        field.addShip(ShipEnum.AIRCRAFT_CARRIER, new Coordinates(new String[]{"A1", "E1"}));
+        field.addShip(ShipEnum.BATTLESHIP, new Coordinates(new String[]{"G1", "G4"}));
+        field.addShip(ShipEnum.SUBMARINE, new Coordinates(new String[]{"I2", "I4"}));
+        field.addShip(ShipEnum.CRUISER, new Coordinates(new String[]{"A7", "A9"}));
+        field.addShip(ShipEnum.DESTROYER, new Coordinates(new String[]{"D5", "D6"}));
+
+                /*
+                  1 2 3 4 5 6 7 8 9 10
+                A O ~ ~ ~ ~ ~ O O O ~
+                B O ~ ~ ~ ~ ~ ~ ~ ~ ~
+                C O ~ ~ ~ ~ ~ ~ ~ ~ ~
+                D O ~ ~ ~ O O ~ ~ ~ ~
+                E O ~ ~ ~ ~ ~ ~ ~ ~ ~
+                F ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+                G O O O O ~ ~ ~ ~ ~ ~
+                H ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+                I ~ O O O ~ ~ ~ ~ ~ ~
+                J ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+                */
     }
 }

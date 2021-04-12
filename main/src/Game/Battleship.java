@@ -1,15 +1,12 @@
 package Game;
 
 import Enums.ShipEnum;
+import Exceptions.BattleshipException;
 import Model.Coordinates;
 import Model.Field;
 import Model.Point;
-import Model.Ships.AircraftCarrier;
-import Model.Ships.Ship;
 
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Scanner;
 
 public class Battleship {
@@ -17,8 +14,8 @@ public class Battleship {
     private final String INPUT_COORD = "Enter the coordinates of the %s (%d cells):\n";
     private final String PRESS_ENTER = "Press enter and pass the move to another player";
 
-    private Field player1field = new Field();
-    private Field player2Field = new Field();
+    private final Field player1field = new Field();
+    private final Field player2Field = new Field();
 
     private EnumSet<ShipEnum> shipEnums = EnumSet.allOf(ShipEnum.class);
 
@@ -62,9 +59,12 @@ public class Battleship {
                     field.addShip(shipEnum, new Coordinates(sc.nextLine().split(" ")));
                     break;
                 } catch (RuntimeException e) {
-                    System.out.println(e.getMessage());
+                    if (!(e instanceof BattleshipException)) {
+                        System.out.println("Enter valid coordinate. Example: A1 A4, B2 D2\n");
+                    } else {
+                        System.out.println(e.getMessage());
+                    }
                 }
-
             }
             System.out.println(field);
         }
@@ -73,10 +73,12 @@ public class Battleship {
     }
 
     private String shootYourShot(int player) {
+        String playerTurnPrompt = "\nPlayer %d, it's your turn:\n";
         String result;
         Point point;
         if (player == 1) {
-            printFields(player);
+            System.out.println(player1field.printFields(player2Field)
+                + String.format(playerTurnPrompt, player));
             try {
                 point = new Point(sc.nextLine());
                 result = player2Field.fireShot(point);
@@ -84,7 +86,8 @@ public class Battleship {
                 result = e.getMessage();
             }
         } else {
-            printFields(player);
+            System.out.println(player2Field.printFields(player1field)
+                + String.format(playerTurnPrompt, player));
             try {
                 point = new Point(sc.nextLine());
                 result = player1field.fireShot(point);
@@ -95,24 +98,6 @@ public class Battleship {
         return result;
     }
 
-    /** Prints the player fields to console according to which player is taking their turn.
-     * Their opponents field will be shown above their own with the  current players
-     * attempted hits, and misses. The opponents ships are hidden. */
-    private void printFields(int player) {
-        String topField;
-        String bottomField;
-        if (player == 1) {
-            topField = player2Field.fieldWithFogOfWar();
-            bottomField = player1field.toString();
-        } else {
-            topField = player1field.fieldWithFogOfWar();
-            bottomField = player2Field.toString();
-        }
-        System.out.println(
-                topField
-                + "---------------------\n"
-                + bottomField
-                + "\nPlayer " + player + ", it's your turn:\n");
-    }
+
 
 }
