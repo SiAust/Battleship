@@ -211,11 +211,11 @@ public class Field {
             field[point.getX()][point.getY()] = GameSymbols.HIT.getSymbol();
             return isShipSunk(point) ?
                     isAllShipsSunk() ? "You sank the last ship. You won. Congratulations!"
-                            : "You sank a ship! Specify a new target:\n"
-                    : "You hit a ship! Try again:\n";
+                            : "You sank a ship!\n"
+                    : "You hit a ship!\n";
         } else {
             field[point.getX()][point.getY()] = GameSymbols.MISS.getSymbol();
-            return "You missed. Try again:\n";
+            return "You missed!\n";
         }
     }
 
@@ -241,8 +241,22 @@ public class Field {
         return shipsOnField.keySet().stream().allMatch(Ship::isSunk);
     }
 
+    /** Simulates a Battleship game field with fog of war by replacing any GameSymbol.SHIP markers
+     * with an empty cell marker, GameSymbol.FOG_OF_WAR marker. GameSymbol.HIT and GameSymbol.MISS
+     * will remain visible.
+     * @see GameSymbols
+     */
     public String fieldWithFogOfWar() {
-        return this.toString().replace(GameSymbols.SHIP.getSymbol(), "~");
+        return this.toString().replace(GameSymbols.SHIP.getSymbol(), GameSymbols.FOG_OF_WAR.getSymbol());
+    }
+
+    /** Prints both the player fields to console. The opponents field will be shown
+     * above this instance, with the current players attempted hits, and misses.
+     * The opponents ships are hidden. */
+    public String printFields(Field opponentField) {
+        String topField = opponentField.fieldWithFogOfWar();
+        String bottomField = this.toString();
+        return topField + "---------------------\n" + bottomField;
     }
 
     @Override

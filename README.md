@@ -14,11 +14,15 @@ Submarine - 3 cells
 Cruiser - 3 cells   
 Submarine - 2 cells
 
+Both players take turns to place their ships.
 Once all the ships have been placed on the battlefield
 the game starts! Enter a point to fire a shot, the result
-will be reflected on the battlefield.
+will be reflected on the battlefield. Players take turns
+to shoot, with the game showing the appropriate field for
+the current player and an obscured field of their 
+opponent above that.
 
-The game continues until all the ships have been sunk.
+The game continues until one player sinks all the enemy ships.
 
 ### To run
 
